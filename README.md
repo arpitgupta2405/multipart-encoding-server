@@ -1,303 +1,235 @@
 # Enhanced Multipart Server
 
-This enhanced multipart server supports multiple encoding formats for file uploads with remote upload capabilities.
+This enhanced multipart server supports multiple encoding formats for file uploads,
 
 ## Supported Encodings
 
 The server supports the following encoding formats:
+- **binary** - Raw binary data
+- **ascii** - ASCII encoded text
+- **utf8** - UTF-8 encoded text
+- **utf-16le** - UTF-16 Little Endian encoded text
+- **ucs2** - UCS-2 encoded text
+- **hex** - Hexadecimal encoded data
+- **base64** - Base64 encoded data
 
-1. **binary** - Raw binary data
-2. **ascii** - ASCII encoded text
-3. **utf-8** - UTF-8 encoded text
-4. **utf-16le** - UTF-16LE encoded text
-5. **ucs2** - UCS-2 encoded text
-6. **hex** - Hexadecimal encoded data
-7. **base64** - Base64 encoded data
+## Endpoints
 
-## Remote Upload Capabilities
-
-The server can automatically upload decoded files to multiple remote destinations:
-
-- **Amazon S3** - Upload to S3 buckets
-- **FTP Server** - Upload to FTP servers
-- **HTTP Endpoints** - Upload to any HTTP API endpoint
-
-### Configuration
-
-Remote uploads can be configured via environment variables or the configuration API:
-
-#### Environment Variables
-
-Copy `env.example` to `.env` and configure your settings:
-
-```bash
-# Enable remote uploads
-REMOTE_UPLOAD_ENABLED=true
-
-# S3 Configuration
-S3_UPLOAD_ENABLED=true
-S3_BUCKET=your-bucket-name
-S3_REGION=us-east-1
-S3_ACCESS_KEY_ID=your-access-key
-S3_SECRET_ACCESS_KEY=your-secret-key
-
-# FTP Configuration
-FTP_UPLOAD_ENABLED=true
-FTP_HOST=ftp.example.com
-FTP_PORT=21
-FTP_USERNAME=your-username
-FTP_PASSWORD=your-password
-FTP_PATH=/uploads
-
-# HTTP Upload Configuration
-HTTP_UPLOAD_ENABLED=true
-HTTP_UPLOAD_URL=https://api.example.com/upload
-HTTP_UPLOAD_METHOD=POST
-HTTP_UPLOAD_HEADERS={"Authorization": "Bearer token"}
+### 1. Standard Multipart Upload
 ```
-
-#### API Configuration
-
-You can also configure remote uploads via API:
-
-```bash
-# Enable remote uploads
-curl -X POST http://localhost:3002/config/remote-upload \
-  -H "Content-Type: application/json" \
-  -d '{
-    "enabled": true,
-    "destinations": {
-      "s3": {
-        "enabled": true,
-        "bucket": "my-bucket",
-        "region": "us-east-1"
-      }
-    }
-  }'
-
-# Check remote upload status
-curl http://localhost:3002/config/remote-upload/status
-```
-
-## API Endpoints
-
-### File Upload Endpoints
-
-All endpoints support file extension preservation and remote uploads.
-
-#### 1. Standard Multipart Upload
-```bash
 POST /upload
-Content-Type: multipart/form-data
-
-# Standard multipart form data
 ```
+Handles standard multipart/form-data uploads using multer.
 
-#### 2. Base64 Encoded Upload
-```bash
-POST /upload-base64
-Content-Type: application/x-www-form-urlencoded
+### 2. Encoding-Specific Endpoints
 
-file1=<base64-encoded-data>
-file1_ext=jpg
-file2=<base64-encoded-data>
-file2_ext=png
-metadata=some metadata
+#### Binary Encoding
 ```
-
-#### 3. Binary Encoded Upload
-```bash
 POST /upload-binary
 Content-Type: application/x-www-form-urlencoded
-
-file1=<binary-data>
-file1_ext=pdf
 ```
+Expects file fields to be binary encoded strings.
 
-#### 4. ASCII Encoded Upload
-```bash
+#### ASCII Encoding
+```
 POST /upload-ascii
 Content-Type: application/x-www-form-urlencoded
-
-file1=<ascii-encoded-data>
-file1_ext=txt
 ```
+Expects file fields to be ASCII encoded strings.
 
-#### 5. UTF-8 Encoded Upload
-```bash
+#### UTF-8 Encoding
+```
 POST /upload-utf8
 Content-Type: application/x-www-form-urlencoded
-
-file1=<utf8-encoded-data>
-file1_ext=json
 ```
+Expects file fields to be UTF-8 encoded strings.
 
-#### 6. UTF-16LE Encoded Upload
-```bash
-POST /upload-utf-16le
+#### UTF-16LE Encoding
+```
+POST /upload-utf16le
 Content-Type: application/x-www-form-urlencoded
-
-file1=<utf16le-encoded-data>
-file1_ext=xml
 ```
+Expects file fields to be UTF-16LE encoded strings.
 
-#### 7. UCS-2 Encoded Upload
-```bash
+#### UCS-2 Encoding
+```
 POST /upload-ucs2
 Content-Type: application/x-www-form-urlencoded
-
-file1=<ucs2-encoded-data>
-file1_ext=txt
 ```
+Expects file fields to be UCS-2 encoded strings.
 
-#### 8. Hex Encoded Upload
-```bash
+#### Hex Encoding
+```
 POST /upload-hex
 Content-Type: application/x-www-form-urlencoded
-
-file1=<hex-encoded-data>
-file1_ext=bin
 ```
+Expects file fields to be hexadecimal encoded strings.
 
-#### 9. Universal Encoded Upload
-```bash
+#### Base64 Encoding
+```
+POST /upload-base64
+Content-Type: application/x-www-form-urlencoded
+```
+Expects file fields to be base64 encoded strings.
+
+### 3. Universal Encoding Endpoint
+```
 POST /upload-encoded
 Content-Type: application/x-www-form-urlencoded
-
-encoding=utf8
-file1=<encoded-data>
-file1_ext=jpg
-file2=<encoded-data>
-file2_ext=png
 ```
+Accepts an `encoding` parameter to specify the encoding type dynamically.
 
-### Configuration Endpoints
+**Parameters:**
+- `encoding` (optional): The encoding type to use. Defaults to 'utf8'
+- File fields: Any field starting with 'file' will be processed
 
-#### 10. Health Check
-```bash
+### 4. Health Check
+```
 GET /health
 ```
+Returns server status and supported encodings.
 
-#### 11. Configure Remote Upload
-```bash
-POST /config/remote-upload
-Content-Type: application/json
+## Request Format
 
+For encoding-specific endpoints, send data in the following format:
+
+```javascript
 {
-  "enabled": true,
-  "destinations": {
-    "s3": {
-      "enabled": true,
-      "bucket": "my-bucket",
-      "region": "us-east-1"
-    },
-    "ftp": {
-      "enabled": true,
-      "host": "ftp.example.com",
-      "username": "user",
-      "password": "pass"
-    },
-    "http": {
-      "enabled": true,
-      "url": "https://api.example.com/upload",
-      "method": "POST"
-    }
-  }
+  "file1": "encoded_data_here",
+  "file1_ext": "jpg",  // Optional: specify file extension
+  "file2": "another_encoded_file",
+  "file2_ext": "png",  // Optional: specify file extension
+  "metadata": "additional_data"
 }
 ```
 
-#### 12. Get Remote Upload Status
-```bash
-GET /config/remote-upload/status
+For the universal endpoint:
+
+```javascript
+{
+  "encoding": "base64",
+  "file1": "base64_encoded_data",
+  "file1_ext": "jpg",  // Optional: specify file extension
+  "file2": "another_base64_file",
+  "file2_ext": "pdf",  // Optional: specify file extension
+  "metadata": "additional_data"
+}
 ```
 
 ## Response Format
 
-All upload endpoints return a consistent response format:
+All endpoints return a JSON response with the following structure:
 
-```json
+```javascript
 {
-  "message": "Received and stored multipart form-data with base64 encoding",
+  "message": "Description of the operation",
   "files": [
     {
       "fieldname": "file1",
       "encoding": "base64",
-      "size": 1024,
-      "path": "/path/to/local/file.jpg",
-      "success": true,
-      "remoteUploads": [
-        {
-          "destination": "s3",
-          "success": true,
-          "url": "https://bucket.s3.region.amazonaws.com/filename.jpg",
-          "size": 1024
-        },
-        {
-          "destination": "ftp",
-          "success": true,
-          "path": "/uploads/filename.jpg",
-          "size": 1024
-        }
-      ]
+      "size": 1234,
+      "path": "/path/to/saved/file",
+      "success": true
     }
   ],
   "fields": {
-    "file1_ext": "jpg",
-    "metadata": "some data"
+    // All non-file fields from the request
   }
 }
 ```
 
-## File Storage Logic
+## Error Handling
 
-The server preserves original file extensions:
+If processing fails for a file, the response will include:
 
-- Files are saved with their original extensions (e.g., `.jpg`, `.png`, `.pdf`)
-- Extension fields (`file1_ext`, `file2_ext`) specify the original file type
-- If no extension is provided, files default to `.bin`
-- Extensions are cleaned to remove invalid characters
-
-## Remote Upload Features
-
-### S3 Upload
-- Supports all S3 regions
-- Configurable bucket and region
-- Uses AWS credentials for authentication
-- Returns S3 URLs for uploaded files
-
-### FTP Upload
-- Supports standard FTP servers
-- Configurable host, port, username, password
-- Uploads to specified directory path
-- Returns FTP file paths
-
-### HTTP Upload
-- Supports any HTTP API endpoint
-- Configurable URL, method, and headers
-- Uses multipart form data for uploads
-- Returns API response data
-
-## Installation and Setup
-
-1. **Install dependencies:**
-```bash
-npm install
+```javascript
+{
+  "fieldname": "file1",
+  "encoding": "base64",
+  "error": "Error description",
+  "success": false
+}
 ```
 
-2. **Configure environment (optional):**
+## File Storage
+
+All processed files are saved to the `uploads/` directory with filenames that include:
+- Timestamp
+- Field name
+- Encoding type
+- Original file extension (if provided) or `.bin` as default
+
+Examples:
+- With extension: `1703123456789-file1-base64.jpg`
+- Without extension: `1703123456789-file1-base64.bin`
+
+## Usage Examples
+
+### Using curl with base64 encoding:
+
 ```bash
-cp env.example .env
-# Edit .env with your settings
+# Create base64 encoded data
+echo "Hello World" | base64
+
+# Send to server
+curl -X POST http://localhost:3002/upload-base64 \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "file1=SGVsbG8gV29ybGQK&file1_ext=jpg&metadata=test"
 ```
 
-3. **Start the server:**
-```bash
-npm start
-```
+### Running Tests with Automatic Cleanup:
 
-4. **Run tests:**
 ```bash
+# Run the test suite (default: empties uploads folder)
 npm test
+
+# Run with explicit empty folder cleanup
+npm run test:clean
+
+# Run with time-based cleanup (preserves existing files)
+npm run test:preserve
+
+# Direct command line options
+node test-encodings.js --empty-folder    # Empty uploads folder
+node test-encodings.js --time-based      # Time-based cleanup
+node test-encodings.js --preserve        # Same as time-based
+node test-encodings.js --clean           # Same as empty-folder
+```
+
+**Cleanup Options:**
+- **Default/Empty Folder**: Deletes ALL files in uploads directory (except system files)
+- **Time-based**: Only deletes files created within the last 5 minutes
+- **Safe for**: Development and testing environments
+- **Not recommended for**: Production environments with important files
+
+### Using JavaScript/Node.js:
+
+```javascript
+const axios = require('axios');
+
+// Test UTF-8 encoding
+const response = await axios.post('http://localhost:3002/upload-utf8', {
+  file1: 'Hello World!',
+  file2: 'Another file content',
+  metadata: 'test data'
+});
+
+console.log(response.data);
+```
+
+### Using the universal endpoint:
+
+```javascript
+const axios = require('axios');
+
+// Test with hex encoding
+const response = await axios.post('http://localhost:3002/upload-encoded', {
+  encoding: 'hex',
+  file1: Buffer.from('Hello World').toString('hex'),
+  metadata: 'test data'
+});
+
+console.log(response.data);
 ```
 
 ## Testing
@@ -305,7 +237,7 @@ npm test
 Run the test script to verify all endpoints:
 
 ```bash
-# Install axios for tests
+# Install dependencies
 npm install axios
 
 # Start the server
@@ -315,60 +247,10 @@ node server.js
 node test-encodings.js
 ```
 
-### Test Cleanup Options
+## Server Configuration
 
-The test script supports different cleanup modes:
-
-```bash
-# Default: Empty uploads folder completely
-node test-encodings.js --empty-folder
-
-# Time-based cleanup (files created in last 5 minutes)
-node test-encodings.js --time-based
-
-# Preserve all files
-node test-encodings.js --preserve
-```
-
-## Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `3002` |
-| `REMOTE_UPLOAD_ENABLED` | Enable remote uploads | `false` |
-| `S3_UPLOAD_ENABLED` | Enable S3 uploads | `false` |
-| `S3_BUCKET` | S3 bucket name | - |
-| `S3_REGION` | S3 region | `us-east-1` |
-| `S3_ACCESS_KEY_ID` | S3 access key | - |
-| `S3_SECRET_ACCESS_KEY` | S3 secret key | - |
-| `FTP_UPLOAD_ENABLED` | Enable FTP uploads | `false` |
-| `FTP_HOST` | FTP host | - |
-| `FTP_PORT` | FTP port | `21` |
-| `FTP_USERNAME` | FTP username | - |
-| `FTP_PASSWORD` | FTP password | - |
-| `FTP_PATH` | FTP upload path | `/uploads` |
-| `HTTP_UPLOAD_ENABLED` | Enable HTTP uploads | `false` |
-| `HTTP_UPLOAD_URL` | HTTP upload URL | - |
-| `HTTP_UPLOAD_METHOD` | HTTP method | `POST` |
-| `HTTP_UPLOAD_HEADERS` | HTTP headers (JSON) | `{}` |
-
-## Logging
-
-The server provides detailed logging for all operations:
-
-- API endpoint hits
-- File processing steps
-- Remote upload attempts and results
-- Error messages with context
-
-## Error Handling
-
-The server handles various error scenarios:
-
-- Invalid encoding formats
-- File processing errors
-- Remote upload failures
-- Configuration errors
-
-All errors are logged and returned in the response with appropriate HTTP status codes.
+- **Port**: 3002 (configurable via PORT environment variable)
+- **Upload Directory**: `./uploads/` (created automatically)
+- **Request Size Limit**: 50MB per endpoint
+- **File Storage**: Disk storage with timestamped filenames
 

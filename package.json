@@ -1,7 +1,7 @@
 {
   "name": "multipart-encoding-server",
   "version": "1.0.0",
-  "description": "Enhanced multipart server supporting multiple encoding formats with remote upload capabilities",
+  "description": "Enhanced multipart server supporting multiple encoding formats for testing",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -11,10 +11,9 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "axios": "1.6.0",
     "express": "4.18.2",
-    "form-data": "^4.0.0",
-    "multer": "1.4.5-lts.1"
+    "multer": "1.4.5-lts.1",
+    "axios": "1.6.0"
   },
   "devDependencies": {
     "nodemon": "3.0.1"
@@ -25,11 +24,7 @@
     "testing",
     "server",
     "file-upload",
-    "form-data",
-    "remote-upload",
-    "s3",
-    "ftp",
-    "http-upload"
+    "form-data"
   ],
   "author": "Arpit Gupta",
   "license": "MIT"
