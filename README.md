@@ -254,16 +254,3 @@ node test-encodings.js
 - **Request Size Limit**: 50MB per endpoint
 - **File Storage**: Disk storage with timestamped filenames
 
-## Integration with Integrator-Adaptor
-
-This enhanced multipartServer aligns with the encoding types supported by the integrator-adaptor system as defined in `integrator-models/src/models/import/httpImport.js`:
-
-```javascript
-schemaObject.http.blobFormat = { 
-  type: String, 
-  enum: ['utf8', 'ucs2', 'utf-16le', 'ascii', 'binary', 'base64', 'hex'], 
-  lowercase: true 
-}
-```
-
-The server provides a testing environment for all these encoding formats, ensuring compatibility with the main system's import functionality. 
