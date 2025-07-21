@@ -31,7 +31,7 @@ multipartServer/
 
 ## Changes Made
 
-1. **Updated package.json**: Changed name from "integrator-playground" to "multipart-encoding-server" and updated description
+1. **Updated package.json**: Changed name from "playground" to "multipart-encoding-server" and updated description
 2. **Renamed README**: Changed from `README-multipartServer.md` to `README.md`
 3. **Added .gitignore**: Proper Git ignore file for Node.js project
 4. **Created uploads directory**: For storing uploaded files
@@ -56,7 +56,7 @@ npm test
 
 ## Supported Encodings
 
-The server supports all encoding types from the integrator-adaptor system:
+The server supports all encoding types from the multipart server system:
 - binary
 - ascii
 - utf8

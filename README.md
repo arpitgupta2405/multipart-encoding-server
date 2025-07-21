@@ -1,6 +1,6 @@
 # Enhanced Multipart Server
 
-This enhanced multipart server supports multiple encoding formats for file uploads, matching the encoding types supported by the integrator-adaptor system.
+This enhanced multipart server supports multiple encoding formats for file uploads, 
 
 ## Supported Encodings
 
