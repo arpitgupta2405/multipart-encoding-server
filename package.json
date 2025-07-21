@@ -2,13 +2,13 @@
   "name": "multipart-encoding-server",
   "version": "1.0.0",
   "description": "Enhanced multipart server supporting multiple encoding formats for testing",
-  "main": "multipartServer.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node multipartServer.js",
+    "start": "node server.js",
     "test": "node test-encodings.js",
     "test:clean": "node test-encodings.js --empty-folder",
     "test:preserve": "node test-encodings.js --time-based",
-    "dev": "nodemon multipartServer.js"
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "4.18.2",

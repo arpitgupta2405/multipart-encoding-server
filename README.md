@@ -1,6 +1,6 @@
 # Enhanced Multipart Server
 
-This enhanced multipart server supports multiple encoding formats for file uploads, 
+This enhanced multipart server supports multiple encoding formats for file uploads,
 
 ## Supported Encodings
 
@@ -241,7 +241,7 @@ Run the test script to verify all endpoints:
 npm install axios
 
 # Start the server
-node multipartServer.js
+node server.js
 
 # In another terminal, run tests
 node test-encodings.js

@@ -5,7 +5,7 @@
 The following files have been moved from `playground/` to `multipartServer/`:
 
 ### Core Files
-- `multipartServer.js` → `multipartServer/multipartServer.js`
+- `server.js` → `multipartServer/server.js`
 - `test-encodings.js` → `multipartServer/test-encodings.js`
 - `README-multipartServer.md` → `multipartServer/README.md`
 - `package.json` → `multipartServer/package.json` (updated)
@@ -20,7 +20,7 @@ The following files have been moved from `playground/` to `multipartServer/`:
 ```
 multipartServer/
 ├── .gitignore
-├── multipartServer.js
+├── server.js
 ├── package.json
 ├── package-lock.json
 ├── README.md
