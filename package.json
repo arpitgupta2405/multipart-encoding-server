@@ -1,0 +1,31 @@
+{
+  "name": "multipart-encoding-server",
+  "version": "1.0.0",
+  "description": "Enhanced multipart server supporting multiple encoding formats for testing",
+  "main": "multipartServer.js",
+  "scripts": {
+    "start": "node multipartServer.js",
+    "test": "node test-encodings.js",
+    "test:clean": "node test-encodings.js --empty-folder",
+    "test:preserve": "node test-encodings.js --time-based",
+    "dev": "nodemon multipartServer.js"
+  },
+  "dependencies": {
+    "express": "4.18.2",
+    "multer": "1.4.5-lts.1",
+    "axios": "1.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "3.0.1"
+  },
+  "keywords": [
+    "multipart",
+    "encoding",
+    "testing",
+    "server",
+    "file-upload",
+    "form-data"
+  ],
+  "author": "Arpit Gupta",
+  "license": "MIT"
+}
